@@ -22,10 +22,10 @@ export default function Header() {
           className="hidden lg:inline"
         />
       </form>
+      <div className="flex justify-center gap-2 md:order-2">
       <Button className=" lg:hidden" color="dark">
         <AiOutlineSearch className="self-center " />
       </Button>
-      <div className="flex justify-center gap-2 md:order-2">
         <Button color="dark" className="hidden sm:inline">
           <FaMoon />
         </Button>
