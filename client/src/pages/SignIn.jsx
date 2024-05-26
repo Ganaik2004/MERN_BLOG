@@ -2,11 +2,14 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {  useToast } from '@chakra-ui/react'
 import { Button, Spinner } from "flowbite-react";
+import { useDispatch,useSelector } from "react-redux";
+import { signInStart,signInFailure,signInSuccess } from "../redux/userSlice.js";
 export default function SignIn() {
   const [formData,setFormData] = useState({});
-  const [loading,setLoading] = useState(false);
+const {loading} = useSelector(state=>state.user);
   const toast = useToast()
   const navigate = useNavigate();
+  const dispatch = useDispatch();
    const handleChange = (e)=>{
         setFormData({...formData,[e.target.id] : e.target.value.trim()});
    };
@@ -24,7 +27,7 @@ const handleSubmit = async(e)=>{
   return;
  }
  try{
-  setLoading(true);
+ dispatch(signInStart());
    const res = await fetch('/api/auth/signin',{
     method:'POST',
     headers:{
@@ -34,7 +37,7 @@ const handleSubmit = async(e)=>{
       });
   const data = await res.json();
   if(data.success===false){
-      setLoading(false);
+    dispatch(signInFailure(data.message));
       toast({
         title: `${data.message}`,
         status: 'error',
@@ -45,7 +48,7 @@ const handleSubmit = async(e)=>{
       });
       return;
     }
-    setLoading(false);
+    dispatch(signInSuccess(data));
     toast({
       title: `User Login Successfully`,
       status: 'success',
@@ -57,7 +60,7 @@ const handleSubmit = async(e)=>{
   navigate('/');
 
  }catch(err){
-  setLoading(false);
+  dispatch(signInFailure(err.message));
   toast({
     title: `${err.message}`,
     status: 'error',
